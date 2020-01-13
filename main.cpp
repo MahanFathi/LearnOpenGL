@@ -76,24 +76,37 @@ int main()
          0.0f,  0.5f, 0.0f
     };
 
+    float colors[] = {
+         1.0f, 0.0f, 0.0f,
+         0.0f, 1.0f, 0.0f,
+         0.0f, 0.0f, 1.0f,
+    };
 
-    // generate, bind, and init vertex buffer object and vertex array object
+
+    // generate, bind, and init vertex buffer object
+    GLuint vertexVBO, colorVBO;
+    glGenBuffers(1, &vertexVBO);
+    glGenBuffers(1, &colorVBO);
+
+    // generate, bind, and init vertex array object
     GLuint VAO;
-    GLuint VBO;
     glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    // binding vertex arrays, binding buffers, and setting
-    // buffer data should occur in the following order
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // binding buffers, setting buffer data, and binding
+    // vertex arrays attributes should occur in the following order
+    glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    GLuint vertex_position = glGetAttribLocation(shaderProgram, "vertex_position");
+    glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-    // vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(2);
 
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
 
 
@@ -105,8 +118,8 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // glUseProgram(shaderProgram);
-        // glBindVertexArray(VAO);
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
