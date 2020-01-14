@@ -1,6 +1,6 @@
 #version 430 core
 in vec3 vertex_position;
-layout (location = 1) in vec3 kir;
+layout (location = 1) in vec3 dummy;
 layout (location = 2) in vec3 vertex_color;
 out vec3 color;
 
