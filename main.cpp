@@ -82,33 +82,33 @@ int main()
         1, 2, 3,   // second triangle
     };
 
-    // generate element buffer object
-    GLuint EBO;
-    glGenBuffers(1, &EBO);
-
-
-    // generate, vertex buffer object
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
-
-    // generate, bind, and init vertex array object
+    // generate and bind vertex array object
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
+    // generate and bind element buffer object
+    GLuint EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+    // generate and bind vertex buffer object
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
     // binding buffers, setting buffer data, and binding
     // vertex arrays attributes should occur in the following order
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+   
+    // send positions and colors to vertex shader
     GLuint vertexPositionLocation = glGetAttribLocation(shaderProgram, "vertexPosition");
     glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(vertexPositionLocation);
     GLuint vertexColorLocation = glGetAttribLocation(shaderProgram, "vertexColor");
     glVertexAttribPointer(vertexColorLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(vertexColorLocation);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
@@ -116,6 +116,7 @@ int main()
     // play around with green values of all rgbs
     float time;
     float greenValue;
+    GLuint greenValueLocation = glGetUniformLocation(shaderProgram, "greenValue");
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -126,11 +127,10 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         time = glfwGetTime();
-        GLuint greenValueLocation = glGetUniformLocation(shaderProgram, "greenValue");
         greenValue = sin(time) / 2.0f + 0.5f;
         glUniform1f(greenValueLocation, greenValue);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
