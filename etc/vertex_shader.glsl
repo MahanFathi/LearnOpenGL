@@ -1,10 +1,10 @@
 #version 430 core
-in vec3 vertex_position;
-in vec3 vertex_color;
+in vec3 vertexPosition;
+in vec3 vertexColor;
 out vec3 color;
 
 void main()
 {
-    color = vertex_color;
-    gl_Position = vec4(vertex_position.x, vertex_position.y, vertex_position.z, 1.0);
+    color = vertexColor;
+    gl_Position = vec4(vertexPosition.x, vertexPosition.y, vertexPosition.z, 1.0);
 }
