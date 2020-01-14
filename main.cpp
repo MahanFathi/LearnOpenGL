@@ -71,22 +71,24 @@ int main()
 
     // objects to draw
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right
+         0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // top left
+    };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3,   // second triangle
     };
 
-    float colors[] = {
-         1.0f, 0.0f, 0.0f,
-         0.0f, 1.0f, 0.0f,
-         0.0f, 0.0f, 1.0f,
-    };
+    // generate element buffer object
+    GLuint EBO;
+    glGenBuffers(1, &EBO);
 
 
-    // generate, bind, and init vertex buffer object
-    GLuint vertexVBO, colorVBO;
-    glGenBuffers(1, &vertexVBO);
-    glGenBuffers(1, &colorVBO);
+    // generate, vertex buffer object
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
 
     // generate, bind, and init vertex array object
     GLuint VAO;
@@ -95,16 +97,17 @@ int main()
 
     // binding buffers, setting buffer data, and binding
     // vertex arrays attributes should occur in the following order
-    glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     GLuint vertex_position_index = glGetAttribLocation(shaderProgram, "vertex_position");
-    glVertexAttribPointer(vertex_position_index, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(vertex_position_index, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    GLuint vertex_color_index = glGetAttribLocation(shaderProgram, "vertex_color");
+    glVertexAttribPointer(vertex_color_index, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
 
     glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(1);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
@@ -118,9 +121,9 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // glUseProgram(shaderProgram);
-        // glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
