@@ -8,6 +8,7 @@
 #include <fstream>
 #include <streambuf>
 
+#include "./inc/shader.h"
 #include "util.h"
 
 int main()
@@ -41,34 +42,9 @@ int main()
     // callback function on window resize
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // vertex shader script
-    std::ifstream tv("./etc/vertex_shader.glsl");
-    std::string vertexShaderScript((std::istreambuf_iterator<char>(tv)), std::istreambuf_iterator<char>());
-    const char * vertexShaderSource = vertexShaderScript.c_str();
-    GLuint vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-    // fragment shader
-    std::ifstream tf("./etc/fragment_shader.glsl");
-    std::string fragmentShaderScript((std::istreambuf_iterator<char>(tf)), std::istreambuf_iterator<char>());
-    const char * fragmentShaderSource = fragmentShaderScript.c_str();
-    GLuint fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    // link shaders
-    GLuint shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
+    // shader
+    Shader shader("./etc/vertex_shader.glsl", "./etc/fragment_shader.glsl");
+    shader.use();
 
     // objects to draw
     float vertices[] = {
@@ -102,9 +78,9 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    GLuint vertexPositionLocation = glGetAttribLocation(shaderProgram, "vertexPosition");
+    GLuint vertexPositionLocation = glGetAttribLocation(shader.ID, "vertexPosition");
     glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    GLuint vertexColorLocation = glGetAttribLocation(shaderProgram, "vertexColor");
+    GLuint vertexColorLocation = glGetAttribLocation(shader.ID, "vertexColor");
     glVertexAttribPointer(vertexColorLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
 
     glEnableVertexAttribArray(0);
@@ -126,9 +102,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         time = glfwGetTime();
-        GLuint greenValueLocation = glGetUniformLocation(shaderProgram, "greenValue");
         greenValue = sin(time) / 2.0f + 0.5f;
-        glUniform1f(greenValueLocation, greenValue);
+        shader.setUniform("greenValue", greenValue);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
