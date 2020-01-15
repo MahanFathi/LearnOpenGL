@@ -8,7 +8,7 @@
 #include <fstream>
 #include <streambuf>
 
-#include "./inc/shader.h"
+#include "shader.h"
 #include "util.h"
 
 int main()
