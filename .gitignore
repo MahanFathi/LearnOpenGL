@@ -5,3 +5,6 @@ main
 GPATH
 GRTAGS
 GTAGS
+
+# glad source
+./src/glad.c
