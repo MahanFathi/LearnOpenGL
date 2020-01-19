@@ -1,10 +1,15 @@
 #version 430 core
+
 in vec3 vertexPosition;
 in vec3 vertexColor;
+in vec2 vertexTexture;
+
 out vec3 color;
+out vec2 txtr;
 
 void main()
 {
     color = vertexColor;
-    gl_Position = vec4(vertexPosition.x, vertexPosition.y, vertexPosition.z, 1.0);
+    txtr = vertexTexture;
+    gl_Position = vec4(vertexPosition, 1.0);
 }

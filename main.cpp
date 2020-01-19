@@ -8,6 +8,8 @@
 #include <fstream>
 #include <streambuf>
 
+#include "stb_image.h"
+
 #include "shader.h"
 #include "util.h"
 
@@ -47,31 +49,36 @@ int main()
     shader.use();
 
     // objects to draw
-    float vertices[] = {
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right
-         0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // top left
+    float vertices[] = { // x, y, z, r, g, b, s, t
+         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
     };
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3,   // second triangle
     };
 
+    // load texture image
+    int textureWidth, textureHeight, textureChannels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* textureImage = stbi_load("./resources/textures/0.jpg", &textureWidth, &textureHeight, &textureChannels, 0);
+
     // generate and bind vertex array object
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    // generate and bind element buffer object
-    GLuint EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
     // generate and bind vertex buffer object
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // generate and bind element buffer object
+    GLuint EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     // binding buffers, setting buffer data, and binding
     // vertex arrays attributes should occur in the following order
@@ -79,11 +86,28 @@ int main()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     // send positions and colors to vertex shader
     GLuint vertexPositionLocation = glGetAttribLocation(shader.ID, "vertexPosition");
-    glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(vertexPositionLocation);
     GLuint vertexColorLocation = glGetAttribLocation(shader.ID, "vertexColor");
-    glVertexAttribPointer(vertexColorLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(vertexColorLocation, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(vertexColorLocation);
+    GLuint vertexTextureLocation = glGetAttribLocation(shader.ID, "vertexTexture");
+    glVertexAttribPointer(vertexTextureLocation, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
+    glEnableVertexAttribArray(vertexTextureLocation);
+
+    // generate and bind texture
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    // texture pattern, filtering, and image
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureImage);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(textureImage);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
@@ -91,6 +115,8 @@ int main()
     // play around with green values of all rgbs
     float time;
     float greenValue;
+
+    shader.setUniform("textureSampler", 0);
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
