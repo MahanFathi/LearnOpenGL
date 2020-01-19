@@ -51,19 +51,14 @@ int main()
     // objects to draw
     float vertices[] = { // x, y, z, r, g, b, s, t
          0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom left
+         0.5f, -0.5f, 0.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
     };
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3,   // second triangle
     };
-
-    // load texture image
-    int textureWidth, textureHeight, textureChannels;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* textureImage = stbi_load("./resources/textures/0.jpg", &textureWidth, &textureHeight, &textureChannels, 0);
 
     // generate and bind vertex array object
     GLuint VAO;
@@ -96,18 +91,38 @@ int main()
     glEnableVertexAttribArray(vertexTextureLocation);
 
     // generate and bind texture
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    GLuint texture0, texture1;
+    glGenTextures(1, &texture0);
+    glGenTextures(1, &texture1);
 
-    // texture pattern, filtering, and image
+    // texture pattern, filtering, and image #0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureImage);
+    int texture0Width, texture0Height, texture0Channels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* texture0Image = stbi_load("./resources/textures/0.jpg", &texture0Width, &texture0Height, &texture0Channels, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture0Width, texture0Height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture0Image);
     glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(textureImage);
+    stbi_image_free(texture0Image);
+    shader.setUniform("textureSampler0", 0);
+
+    // texture pattern, filtering, and image #1
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    int texture1Width, texture1Height, texture1Channels;
+    unsigned char* texture1Image = stbi_load("./resources/textures/1.jpg", &texture1Width, &texture1Height, &texture1Channels, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1Width, texture1Height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1Image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(texture1Image);
+    shader.setUniform("textureSampler1", 1);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
@@ -116,7 +131,6 @@ int main()
     float time;
     float greenValue;
 
-    shader.setUniform("textureSampler", 0);
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
