@@ -4,6 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <string>
 #include <fstream>
 #include <streambuf>
@@ -127,10 +131,12 @@ int main()
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
 
+    //  make a transformation
+    glm::mat4 trans = glm::mat4(1.0f);
+
     // play around with green values of all rgbs
     float time;
     float greenValue;
-
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -140,9 +146,14 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // change color
         time = glfwGetTime();
         greenValue = sin(time) / 2.0f + 0.5f;
         shader.setUniform("greenValue", greenValue);
+
+        // rotate
+        trans = glm::rotate(trans, time/1000, glm::vec3(0.0f, 0.0f, 1.0f));
+        shader.setUniform("transform", trans);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
