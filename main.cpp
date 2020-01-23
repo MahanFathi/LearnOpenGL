@@ -16,6 +16,13 @@
 
 #include "shader.h"
 #include "util.h"
+#include "common.h"
+
+// cam settings
+float deltaTime = 0.0f;
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
 int main()
 {
@@ -35,6 +42,9 @@ int main()
     }
     glfwMakeContextCurrent(window);
 
+    // hide and caputure the cursor
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     // load opengl functions in GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -45,8 +55,9 @@ int main()
     // rendering window size
     glViewport(0, 0, 800, 600);
 
-    // callback function on window resize
+    // assign callback functions
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
     // shader
     Shader shader("./etc/vertex_shader.glsl", "./etc/fragment_shader.glsl");
@@ -170,6 +181,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // render loop
+    float lastFrameTime = 0.0f;
     while (!glfwWindowShouldClose(window)) {
 
         processInput(window);
@@ -180,14 +192,13 @@ int main()
 
         // change color
         time = glfwGetTime();
+        deltaTime = time - lastFrameTime;
+        lastFrameTime = time;
         greenValue = sin(time) / 2.0f + 0.5f;
         shader.setUniform("greenValue", greenValue);
 
-        // rotate cam by chanding view matrix
-        const float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
-        view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+        // cam might be readjusted
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         shader.setUniform("view", view);
 
         for (auto position : cubePositions) {
