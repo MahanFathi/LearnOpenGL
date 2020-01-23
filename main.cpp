@@ -60,12 +60,18 @@ int main()
         -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
          0.5f,  0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // perpendicular upper right
         -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // perpendicular upper left
+        -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.5f, 0.0f, 1.0f, // bottom left
+         0.5f, -0.5f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, // bottom right
     };
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,    // first triangle
         1, 2, 3,    // second triangle
         3, 0, 4,    // perpendicular
         3, 4, 5,    // perpendicular
+        4, 5, 6,    // ...
+        6, 7, 4,
+        1, 7, 2,
+        2, 6, 7,
     };
 
     // generate and bind vertex array object
@@ -152,6 +158,9 @@ int main()
     float time;
     float greenValue;
 
+    // run depth check (Z-buffer)
+    glEnable(GL_DEPTH_TEST);
+
     // render loop
     while (!glfwWindowShouldClose(window)) {
 
@@ -159,6 +168,7 @@ int main()
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         // change color
         time = glfwGetTime();
@@ -169,7 +179,7 @@ int main()
         transform = glm::rotate(transform, time/1000, glm::vec3(0.0f, 0.0f, 1.0f));
         shader.setUniform("transform", transform);
 
-        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
