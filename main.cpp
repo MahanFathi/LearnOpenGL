@@ -58,10 +58,14 @@ int main()
          0.5f, -0.5f, 0.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
+         0.5f,  0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // perpendicular upper right
+        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // perpendicular upper left
     };
     unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,   // first triangle
-        1, 2, 3,   // second triangle
+        0, 1, 3,    // first triangle
+        1, 2, 3,    // second triangle
+        3, 0, 4,    // perpendicular
+        3, 4, 5,    // perpendicular
     };
 
     // generate and bind vertex array object
@@ -131,8 +135,18 @@ int main()
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
 
-    //  make a transformation
-    glm::mat4 trans = glm::mat4(1.0f);
+    //  make transformations
+    glm::mat4 transform = glm::mat4(1.0f);
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
+    shader.setUniform("model", model);
+    shader.setUniform("view", view);
+    shader.setUniform("projection", projection);
+
 
     // play around with green values of all rgbs
     float time;
@@ -152,10 +166,10 @@ int main()
         shader.setUniform("greenValue", greenValue);
 
         // rotate
-        trans = glm::rotate(trans, time/1000, glm::vec3(0.0f, 0.0f, 1.0f));
-        shader.setUniform("transform", trans);
+        transform = glm::rotate(transform, time/1000, glm::vec3(0.0f, 0.0f, 1.0f));
+        shader.setUniform("transform", transform);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

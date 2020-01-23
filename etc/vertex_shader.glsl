@@ -8,10 +8,13 @@ out vec3 color;
 out vec2 txtr;
 
 uniform mat4 transform;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
     color = vertexColor;
     txtr = vertexTexture;
-    gl_Position = transform * vec4(vertexPosition, 1.0);
+    gl_Position = projection * view * model * transform * vec4(vertexPosition, 1.0);
 }
