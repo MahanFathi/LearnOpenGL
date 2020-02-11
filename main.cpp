@@ -165,10 +165,8 @@ int main()
     // glBindVertexArray(0);
 
     //  make transformations
-    glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
     shader.setUniform("projection", projection);
 
@@ -197,10 +195,6 @@ int main()
         greenValue = sin(time) / 2.0f + 0.5f;
         shader.setUniform("greenValue", greenValue);
 
-        // cam might be readjusted
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        shader.setUniform("view", view);
-
         for (auto position : cubePositions) {
 
             // rotate
@@ -211,12 +205,15 @@ int main()
             // translate
             glm::mat4 modelTranslation = glm::mat4(1.0f);
             modelTranslation = glm::translate(modelTranslation, position);
-            shader.setUniform("model", modelTranslation * model);
+            shader.setUniform("model", modelTranslation);
 
             glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, (void*)0);
 
         }
 
+        // cam might be readjusted
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        shader.setUniform("view", view);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
