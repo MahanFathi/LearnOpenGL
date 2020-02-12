@@ -180,11 +180,12 @@ int main()
 
         // render objects with objectShader
         objectShader.use();
+        objectShader.setUniform("projection", projection);
+        objectShader.setUniform("cubeColor", cubeColor);
+        objectShader.setUniform("cameraPosition", cameraPos);
+        objectShader.setUniform("lightPosition", lightPosition);
+        objectShader.setUniform("lightColor", lightColor);
         for (auto position : cubePositions) {
-            objectShader.setUniform("projection", projection);
-            objectShader.setUniform("cubeColor", cubeColor);
-            objectShader.setUniform("lightPosition", lightPosition);
-            objectShader.setUniform("lightColor", lightColor);
 
             // rotate
             glm::mat4 transform = glm::mat4(1.0f);
