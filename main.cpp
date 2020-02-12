@@ -156,6 +156,12 @@ Shader shader("./etc/vertex_shader.glsl", "./etc/fragment_shader.glsl");
     glm::vec3 cubeColor = glm::vec3(0.19f, 0.84f, 0.78f);
     shader.setUniform("cubeColor", cubeColor);
 
+    // lighting position
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 lightPosition = glm::vec3(1.0f, 1.0f, 5.0f);
+    shader.setUniform("lightPosition", lightPosition);
+    shader.setUniform("lightColor", lightColor);
+
     // run depth check (Z-buffer)
     glEnable(GL_DEPTH_TEST);
 
