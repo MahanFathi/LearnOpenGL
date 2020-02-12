@@ -56,12 +56,12 @@ int main()
     glViewport(0, 0, 800, 600);
 
     // assign callback functions
-glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
-// shader
-Shader shader("./etc/vertex_shader.glsl", "./etc/fragment_shader.glsl");
-    shader.use();
+    // shader
+    Shader objectShader("./etc/object_shaders/vertex_shader.glsl", "./etc/object_shaders/fragment_shader.glsl");
+    Shader lampShader("./etc/lamp_shaders/vertex_shader.glsl", "./etc/lamp_shaders/fragment_shader.glsl");
 
     // objects to draw
     float vertices[] = { // x, y, z, nx, ny, nz
@@ -136,31 +136,28 @@ Shader shader("./etc/vertex_shader.glsl", "./etc/fragment_shader.glsl");
     // vertex arrays attributes should occur in the following order
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     // send positions and colors to vertex shader
-    GLuint vertexPositionLocation = glGetAttribLocation(shader.ID, "vertexPosition");
-    glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(vertexPositionLocation);
-    GLuint vertexNormalLocation = glGetAttribLocation(shader.ID, "vertexNormal");
-    glVertexAttribPointer(vertexNormalLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
-    glEnableVertexAttribArray(vertexNormalLocation);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
+
+    // lamp scale
+    float lampScale = 0.1f;
 
     //  make transformations
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
-    shader.setUniform("projection", projection);
 
     // set color
     glm::vec3 cubeColor = glm::vec3(0.19f, 0.84f, 0.78f);
-    shader.setUniform("cubeColor", cubeColor);
 
     // lighting position
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightPosition = glm::vec3(1.0f, 1.0f, 5.0f);
-    shader.setUniform("lightPosition", lightPosition);
-    shader.setUniform("lightColor", lightColor);
+    glm::vec3 lightPosition = glm::vec3(1.0f, 1.0f, -3.0f);
 
     // run depth check (Z-buffer)
     glEnable(GL_DEPTH_TEST);
@@ -181,27 +178,41 @@ Shader shader("./etc/vertex_shader.glsl", "./etc/fragment_shader.glsl");
         deltaTime = time - lastFrameTime;
         lastFrameTime = time;
 
+        // render objects with objectShader
+        objectShader.use();
         for (auto position : cubePositions) {
+            objectShader.setUniform("projection", projection);
+            objectShader.setUniform("cubeColor", cubeColor);
+            objectShader.setUniform("lightPosition", lightPosition);
+            objectShader.setUniform("lightColor", lightColor);
 
             // rotate
             glm::mat4 transform = glm::mat4(1.0f);
             transform = glm::rotate(transform, time, glm::normalize(position));
-            shader.setUniform("transform", transform);
+            objectShader.setUniform("transform", transform);
 
             // translate
             glm::mat4 modelTranslation = glm::mat4(1.0f);
             modelTranslation = glm::translate(modelTranslation, position);
-            shader.setUniform("model", modelTranslation);
+            objectShader.setUniform("model", modelTranslation);
 
             glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, (void*)0);
             glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
         }
-
         // cam might be readjusted
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        shader.setUniform("view", view);
+        objectShader.setUniform("view", view);
+
+        // render lamp with lampShader
+        lampShader.use();
+        // translate
+        glm::mat4 modelTranslation = glm::mat4(1.0f);
+        modelTranslation = glm::translate(modelTranslation, lightPosition);
+        lampShader.setUniform("lampScale", lampScale);
+        lampShader.setUniform("model", modelTranslation);
+        lampShader.setUniform("view", view);
+        lampShader.setUniform("projection", projection);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
