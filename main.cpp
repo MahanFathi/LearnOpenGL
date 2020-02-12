@@ -56,34 +56,59 @@ int main()
     glViewport(0, 0, 800, 600);
 
     // assign callback functions
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
+glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+glfwSetCursorPosCallback(window, mouse_callback);
 
-    // shader
-    Shader shader("./etc/vertex_shader.glsl", "./etc/fragment_shader.glsl");
+// shader
+Shader shader("./etc/vertex_shader.glsl", "./etc/fragment_shader.glsl");
     shader.use();
 
     // objects to draw
-    float vertices[] = { // x, y, z, r, g, b, s, t
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
-         0.5f,  0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // perpendicular upper right
-        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // perpendicular upper left
-        -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.5f, 0.0f, 1.0f, // bottom left
-         0.5f, -0.5f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, // bottom right
+    float vertices[] = { // x, y, z, nx, ny, nz
+          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+          0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+          0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+          0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+          0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+          0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+          0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+          0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+          0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+          0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+
+         -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+         -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+         -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+         -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+         -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+         -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+
+
+          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+
+          0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
     };
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,    // first triangle
-        1, 2, 3,    // second triangle
-        3, 0, 4,    // perpendicular
-        3, 4, 5,    // perpendicular
-        4, 5, 6,    // ...
-        6, 7, 4,
-        1, 7, 2,
-        2, 6, 7,
-    };
+   
     glm::vec3 cubePositions[] = {   // spawn cubes at these positions
       glm::vec3( 0.0f,  0.0f,  0.1f),
       glm::vec3( 2.0f,  5.0f, -15.0f), 
@@ -107,59 +132,16 @@ int main()
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    // generate and bind element buffer object
-    GLuint EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
     // binding buffers, setting buffer data, and binding
     // vertex arrays attributes should occur in the following order
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     // send positions and colors to vertex shader
     GLuint vertexPositionLocation = glGetAttribLocation(shader.ID, "vertexPosition");
-    glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(vertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(vertexPositionLocation);
-    GLuint vertexColorLocation = glGetAttribLocation(shader.ID, "vertexColor");
-    glVertexAttribPointer(vertexColorLocation, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
-    glEnableVertexAttribArray(vertexColorLocation);
-    GLuint vertexTextureLocation = glGetAttribLocation(shader.ID, "vertexTexture");
-    glVertexAttribPointer(vertexTextureLocation, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
-    glEnableVertexAttribArray(vertexTextureLocation);
-
-    // generate and bind texture
-    GLuint texture0, texture1;
-    glGenTextures(1, &texture0);
-    glGenTextures(1, &texture1);
-
-    // texture pattern, filtering, and image #0
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    int texture0Width, texture0Height, texture0Channels;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* texture0Image = stbi_load("./resources/textures/0.jpg", &texture0Width, &texture0Height, &texture0Channels, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture0Width, texture0Height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture0Image);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(texture0Image);
-    shader.setUniform("textureSampler0", 0);
-
-    // texture pattern, filtering, and image #1
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    int texture1Width, texture1Height, texture1Channels;
-    unsigned char* texture1Image = stbi_load("./resources/textures/1.jpg", &texture1Width, &texture1Height, &texture1Channels, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1Width, texture1Height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1Image);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(texture1Image);
-    shader.setUniform("textureSampler1", 1);
+    GLuint vertexNormalLocation = glGetAttribLocation(shader.ID, "vertexNormal");
+    glVertexAttribPointer(vertexNormalLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(vertexNormalLocation);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
@@ -170,15 +152,15 @@ int main()
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
     shader.setUniform("projection", projection);
 
-
-    // play around with green values of all rgbs
-    float time;
-    float greenValue;
+    // set color
+    glm::vec3 cubeColor = glm::vec3(0.19f, 0.84f, 0.78f);
+    shader.setUniform("cubeColor", cubeColor);
 
     // run depth check (Z-buffer)
     glEnable(GL_DEPTH_TEST);
 
     // render loop
+    float time;
     float lastFrameTime = 0.0f;
     while (!glfwWindowShouldClose(window)) {
 
@@ -192,8 +174,6 @@ int main()
         time = glfwGetTime();
         deltaTime = time - lastFrameTime;
         lastFrameTime = time;
-        greenValue = sin(time) / 2.0f + 0.5f;
-        shader.setUniform("greenValue", greenValue);
 
         for (auto position : cubePositions) {
 
@@ -208,6 +188,8 @@ int main()
             shader.setUniform("model", modelTranslation);
 
             glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, (void*)0);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
         }
 
