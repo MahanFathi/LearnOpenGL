@@ -5,6 +5,7 @@ struct Material {
     float diffuseStrength;
     float specularStrength;
     float shininess;
+    sampler2D textureSampler;
 };
 
 in vec3 fragNormal;
@@ -33,5 +34,8 @@ void main()
     float specular = material.specularStrength *
         pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
 
-    FragColor = vec4((specular + diffusion + material.ambientStrength) * lightColor * cubeColor, 1.0);
+    FragColor = texture(material.textureSampler, fragTexCoords) + vec4((specular + diffusion + material.ambientStrength) * lightColor * cubeColor, 1.0);
+
+    // FragColor = mix(texture(textureSampler0, txtr), texture(textureSampler1, txtr), 0.2) +
+        // vec4(color.r, color.g + greenValue, color.b, 1.0);
 }
