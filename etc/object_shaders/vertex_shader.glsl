@@ -1,10 +1,12 @@
 #version 430 core
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
+layout (location = 0) in vec3 vertexPosition;
+layout (location = 1) in vec3 vertexNormal;
+layout (location = 2) in vec2 vertexTexCoords;
 
 out vec3 fragNormal;
 out vec3 fragPosition;
+out vec2 fragTexCoords;
 
 uniform mat4 transform;
 uniform mat4 model;
@@ -16,4 +18,5 @@ void main()
     gl_Position = projection * view * model * transform * vec4(vertexPosition, 1.0);
     fragPosition = vec3(model * transform * vec4(vertexPosition, 1.0));
     fragNormal = normalize(vec3(transform * vec4(vertexNormal, 1.0)));
+    fragTexCoords = vertexTexCoords;
 }

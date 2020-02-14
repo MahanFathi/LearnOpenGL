@@ -9,6 +9,7 @@ struct Material {
 
 in vec3 fragNormal;
 in vec3 fragPosition;
+in vec2 fragTexCoords;
 
 out vec4 FragColor;
 

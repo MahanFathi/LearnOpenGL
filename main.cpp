@@ -64,51 +64,50 @@ int main()
     Shader lampShader("./etc/lamp_shaders/vertex_shader.glsl", "./etc/lamp_shaders/fragment_shader.glsl");
 
     // objects to draw
-    float vertices[] = { // x, y, z, nx, ny, nz
-          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    float vertices[] = { // x, y, z, nx, ny, nz, s, t
+        // positions          // normals           // texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-          0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-          0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-          0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-          0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-          0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-          0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-          0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-          0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-          0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-         -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-         -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-         -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-         -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-         -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-         -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-
-          0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
-   
     glm::vec3 cubePositions[] = {   // spawn cubes at these positions
       glm::vec3( 0.0f,  0.0f,  0.1f),
       glm::vec3( 2.0f,  5.0f, -15.0f), 
@@ -136,10 +135,12 @@ int main()
     // vertex arrays attributes should occur in the following order
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     // send positions and colors to vertex shader
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
