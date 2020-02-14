@@ -143,23 +143,37 @@ int main()
     glEnableVertexAttribArray(2);
 
     // generate and bind texture
-    GLuint texture;
-    glGenTextures(1, &texture);
+    GLuint texture0, texture1;
+    glGenTextures(1, &texture0);
+    glGenTextures(1, &texture1);
 
     // texture pattern, filtering, and image #0
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, texture0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    int textureWidth, textureHeight, textureChannels;
+    int texture0Width, texture0Height, texture0Channels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* textureImage = stbi_load("./resources/textures/2.jpg", &textureWidth, &textureHeight, &textureChannels, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureImage);
+    unsigned char* texture0Image = stbi_load("./resources/textures/2.jpg", &texture0Width, &texture0Height, &texture0Channels, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture0Width, texture0Height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture0Image);
     glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(textureImage);
-    objectShader.setUniform("material.textureSampler", 0);
+    stbi_image_free(texture0Image);
+
+    // texture pattern, filtering, and image #1
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    int texture1Width, texture1Height, texture1Channels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* texture1Image = stbi_load("./resources/textures/3.jpg", &texture1Width, &texture1Height, &texture1Channels, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1Width, texture1Height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1Image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(texture1Image);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindVertexArray(0);
@@ -209,6 +223,8 @@ int main()
         objectShader.setUniform("material.diffuseStrength", 0.7f);
         objectShader.setUniform("material.specularStrength", 0.5f);
         objectShader.setUniform("material.shininess", 16.0f);
+        objectShader.setUniform("material.textureSampler", 0);
+        objectShader.setUniform("material.textureSamplerSpecular", 1);
         for (auto position : cubePositions) {
 
             // rotate
