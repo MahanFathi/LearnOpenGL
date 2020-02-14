@@ -205,7 +205,7 @@ int main()
         objectShader.setUniform("cameraPosition", cameraPos);
         objectShader.setUniform("lightPosition", lightPosition);
         objectShader.setUniform("lightColor", lightColor);
-        objectShader.setUniform("material.ambientStrength", 0.1f);
+        objectShader.setUniform("material.ambientStrength", 0.2f);
         objectShader.setUniform("material.diffuseStrength", 0.7f);
         objectShader.setUniform("material.specularStrength", 0.5f);
         objectShader.setUniform("material.shininess", 16.0f);
