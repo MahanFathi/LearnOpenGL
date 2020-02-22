@@ -237,7 +237,6 @@ int main()
             modelTranslation = glm::translate(modelTranslation, position);
             objectShader.setUniform("model", modelTranslation);
 
-            glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, (void*)0);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         // cam might be readjusted
