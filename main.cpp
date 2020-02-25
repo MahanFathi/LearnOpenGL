@@ -72,14 +72,14 @@ int main()
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
-    // translate
-    glm::mat4 modelTranslation = glm::mat4(1.0f);
-    modelTranslation = glm::translate(modelTranslation, glm::vec3(1.0f, 1.0f, 1.0f));
-    objectShader.setUniform("model", modelTranslation);
+    // scale
+    glm::mat4 scale = glm::mat4(1.0f);
+    scale = glm::scale(scale, glm::vec3(0.2f, 0.2f, 0.2f));
+    objectShader.setUniform("model", scale);
 
     // lighting position
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightPosition = glm::vec3(1.0f, 1.0f, -3.0f);
+    glm::vec3 lightPosition = glm::vec3(1.0f, 1.0f, 3.0f);
 
     // run depth check (Z-buffer)
     glEnable(GL_DEPTH_TEST);
