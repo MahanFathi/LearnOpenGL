@@ -8,3 +8,6 @@ GTAGS
 
 # glad source
 ./src/glad.c
+
+# sizable resources
+./resources/nanosuit
