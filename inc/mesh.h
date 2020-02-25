@@ -39,7 +39,7 @@ public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
-    unsigned int VAO;
+    GLuint VAO;
 
     /*  Functions  */
     // constructor
@@ -51,7 +51,7 @@ public:
 
 private:
     /*  Render data  */
-    unsigned int VBO, EBO;
+    GLuint VBO, EBO;
 
     /*  Functions    */
     // initializes all the buffer objects/arrays

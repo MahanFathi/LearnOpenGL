@@ -19,7 +19,6 @@ uniform Material material;
 uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
 uniform vec3 lightColor;
-uniform vec3 cubeColor;
 
 void main()
 {
@@ -38,6 +37,4 @@ void main()
     FragColor = texture(material.textureSampler, fragTexCoords) * vec4((diffusion + material.ambientStrength) * lightColor, 1.0) +
         texture(material.textureSamplerSpecular, fragTexCoords) * vec4((specular) * lightColor, 1.0);
 
-    // FragColor = mix(texture(textureSampler0, txtr), texture(textureSampler1, txtr), 0.2) +
-        // vec4(color.r, color.g + greenValue, color.b, 1.0);
 }
