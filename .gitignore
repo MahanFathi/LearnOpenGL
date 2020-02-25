@@ -10,4 +10,4 @@ GTAGS
 ./src/glad.c
 
 # sizable resources
-./resources
+./resources/nanosuit/
